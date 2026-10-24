@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartBus Ticket Booking</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+    color: #14243d;
+}
+
+header {
+    background: linear-gradient(120deg, #10213a, #245b91);
+    color: white;
+    padding: 25px 7%;
+}
+
+header h1 {
+    margin-bottom: 8px;
+}
+
+.hero {
+    background: #183b61;
+    color: white;
+    padding: 35px 7%;
+}
+
+.hero h2 {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    color: #d5e5f7;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 25px auto;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-card, .panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    border: 1px solid #e4eaf2;
+    box-shadow: 0 5px 20px #15243d0c;
+    margin-bottom: 20px;
+}
+
+.stat-card p {
+    color: #718096;
+    margin-bottom: 12px;
+}
+
+.stat-card h3 {
+    color: #2563eb;
+    overflow-wrap: anywhere;
+}
+
+.navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: white;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #52627a;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.navigation a:hover,
+.navigation a.active {
+    background: #2563eb;
+    color: white;
+}
+
+.section-title {
+    margin: 25px 0 18px;
+}
+
+.section-title p {
+    color: #718096;
+    margin-top: 8px;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+input, select {
+    padding: 12px;
+    border: 1px solid #d7dfeb;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.search {
+    flex: 1;
+    min-width: 200px;
+}
+
+.btn {
+    padding: 12px 16px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.btn:hover {
+    background: #1d4ed8;
+}
+
+.btn-light {
+    background: #edf2f8;
+    color: #263750;
+}
+
+.btn-danger {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+th {
+    background: #f7f9fc;
+    color: #65738a;
+    text-align: left;
+    padding: 15px;
+    font-size: 12px;
+}
+
+td {
+    padding: 16px 15px;
+    border-bottom: 1px solid #edf1f6;
+    font-size: 14px;
+}
+
+.route-id {
+    color: #2563eb;
+    font-weight: bold;
+}
+
+.fare {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.available, .confirmed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.partial {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.full, .cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.field input, .field select {
+    width: 100%;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.flash {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.flash.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.flash.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.city-card {
+    background: #f8faff;
+    border: 1px solid #e4eaf2;
+    border-radius: 10px;
+    padding: 18px;
+}
+
+.city-card h3 {
+    margin-bottom: 12px;
+}
+
+.departure {
+    padding: 12px 0;
+    border-top: 1px solid #e4eaf2;
+    line-height: 1.6;
+}
+
+.muted {
+    color: #718096;
+    font-size: 13px;
+}
+
+.empty {
+    text-align: center;
+    padding: 30px;
+    color: #718096;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #718096;
+}
+
+@media (max-width: 900px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .schedule-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .hero h2 {
+        font-size: 25px;
+    }
+
+    .form-grid, .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .stat-card, .panel {
+        padding: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚌 SmartBus</h1>
+    <p>Smart Bus Ticket Booking System</p>
+</header>
+
+<section class="hero">
+    <h2>Travel smarter. Book with confidence.</h2>
+    <p>Explore routes, reserve seats and manage your journeys.</p>
+</section>
+
+<main class="container">
+
+<section class="stats">
+    <div class="stat-card">
+        <p>Total Routes</p>
+        <h3>{{ routes|length }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <p>Seats Available</p>
+        <h3>{{ routes|sum(attribute='Availability') }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <p>Confirmed Bookings</p>
+        <h3>{{ report.confirmed_bookings }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <p>Confirmed Revenue</p>
+        <h3>Rs. {{ "{:,}".format(report.confirmed_revenue) }}</h3>
+    </div>
+</section>
+
+<nav class="navigation">
+    <a href="{{ url_for('home', view='routes') }}"
+       class="{{ 'active' if view == 'routes' else '' }}">Routes</a>
+
+    <a href="{{ url_for('home', view='book') }}"
+       class="{{ 'active' if view == 'book' else '' }}">Book Ticket</a>
+
+    <a href="{{ url_for('home', view='bookings') }}"
+       class="{{ 'active' if view == 'bookings' else '' }}">My Bookings</a>
+
+    <a href="{{ url_for('home', view='seats') }}"
+       class="{{ 'active' if view == 'seats' else '' }}">Seat Availability</a>
+
+    <a href="{{ url_for('home', view='schedule') }}"
+       class="{{ 'active' if view == 'schedule' else '' }}">Schedule</a>
+
+    <a href="{{ url_for('home', view='report') }}"
+       class="{{ 'active' if view == 'report' else '' }}">Reports</a>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+
+{% if view == 'routes' or view == 'seats' %}
+
+<div class="section-title">
+    <h2>{{ 'Seat Availability' if view == 'seats' else 'Available Bus Routes' }}</h2>
+    <p>Search routes and check available seats.</p>
+</div>
+
+<section class="panel">
+    <form class="filters" action="{{ url_for('home') }}" method="get">
+        <input type="hidden" name="view" value="{{ view }}">
+
+        <input class="search"
+               type="search"
+               name="q"
+               value="{{ search_term }}"
+               placeholder="Search route ID or city">
+
+        <label>
+            <input type="checkbox"
+                   name="available"
+                   value="1"
+                   {{ 'checked' if available_only else '' }}>
+            Available seats only
+        </label>
+
+        <button class="btn" type="submit">Search</button>
+        <a class="btn btn-light" href="{{ url_for('home', view=view) }}">Reset</a>
+    </form>
+</section>
+
+<section class="panel">
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+    <th>Route ID</th>
+    <th>Journey</th>
+    <th>Departure</th>
+    <th>Fare</th>
+    <th>Seats</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for route in displayed_routes %}
+<tr>
+    <td class="route-id">{{ route.route_id }}</td>
+
+    <td>
+        <strong>{{ route.Departure }}</strong>
+        <div class="muted">to {{ route.Destination }}</div>
+    </td>
+
+    <td>{{ route['Departure time'] }}</td>
+    <td class="fare">Rs. {{ "{:,}".format(route.Fare) }}</td>
+    <td>{{ route.Availability }} / {{ route.Total }}</td>
+
+    <td>
+        {% if route.Availability == 0 %}
+            <span class="badge full">Fully Booked</span>
+        {% elif route.Availability == route.Total %}
+            <span class="badge available">Available</span>
+        {% else %}
+            <span class="badge partial">Partially Booked</span>
+        {% endif %}
+    </td>
+
+    <td>
+        <a class="btn btn-light"
+           href="{{ url_for('home', view='book', route=route.route_id) }}">
+            Select
+        </a>
+    </td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="7" class="empty">No matching routes found.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</section>
+
+
+{% elif view == 'book' %}
+
+<div class="section-title">
+    <h2>Book Your Ticket</h2>
+    <p>Enter your details to reserve seats.</p>
+</div>
+
+<section class="panel">
+<form action="{{ url_for('book_ticket') }}" method="post">
+<div class="form-grid">
+
+    <div class="field">
+        <label for="name">Passenger Name</label>
+        <input id="name" type="text" name="name"
+               placeholder="Enter full name" required maxlength="100">
+    </div>
+
+    <div class="field">
+        <label for="age">Passenger Age</label>
+        <input id="age" type="number" name="age"
+               min="1" max="120" required>
+    </div>
+
+    <div class="field">
+        <label for="route_id">Select Route</label>
+        <select id="route_id" name="route_id" required>
+            <option value="">Choose a route</option>
+
+            {% for route in routes %}
+            <option value="{{ route.route_id }}"
+                {{ 'selected' if selected_route == route.route_id else '' }}
+                {{ 'disabled' if route.Availability == 0 else '' }}>
+                {{ route.route_id }} |
+                {{ route.Departure }} to {{ route.Destination }} |
+                {{ route['Departure time'] }} |
+                Rs. {{ "{:,}".format(route.Fare) }} |
+                {{ route.Availability }} seats left
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="field">
+        <label for="seats">Number of Seats</label>
+        <input id="seats" type="number" name="seats"
+               min="1" max="45" value="1" required>
+    </div>
+
+    <div class="field full-width">
+        <button class="btn" type="submit">Confirm Booking</button>
+    </div>
+
+</div>
+</form>
+</section>
+
+
+{% elif view == 'bookings' %}
+
+<div class="section-title">
+    <h2>My Bookings</h2>
+    <p>View and cancel your bookings.</p>
+</div>
+
+<section class="panel">
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+    <th>Booking ID</th>
+    <th>Passenger</th>
+    <th>Age</th>
+    <th>Route</th>
+    <th>Seats</th>
+    <th>Total Fare</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for booking in bookings|reverse %}
+<tr>
+    <td class="route-id">{{ booking.booking_id }}</td>
+    <td>{{ booking.passenger_name }}</td>
+    <td>{{ booking.passenger_age }}</td>
+    <td>{{ booking.route_id }}</td>
+    <td>{{ booking.seats }}</td>
+    <td class="fare">Rs. {{ "{:,}".format(booking.total_fare) }}</td>
+
+    <td>
+        {% if booking.status == 'Confirmed' %}
+            <span class="badge confirmed">Confirmed</span>
+        {% else %}
+            <span class="badge cancelled">Cancelled</span>
+        {% endif %}
+    </td>
+
+    <td>
+        {% if booking.status == 'Confirmed' %}
+        <form method="post"
+              action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}"
+              onsubmit="return confirm('Cancel this booking?');">
+            <button class="btn btn-danger" type="submit">Cancel</button>
+        </form>
+        {% else %}
+            —
+        {% endif %}
+    </td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="8" class="empty">No bookings yet.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</section>
+
+
+{% elif view == 'schedule' %}
+
+<div class="section-title">
+    <h2>Route Schedule</h2>
+    <p>Departures grouped by city.</p>
+</div>
+
+<section class="panel">
+<div class="schedule-grid">
+{% for city, city_routes in schedule.items() %}
+    <div class="city-card">
+        <h3>📍 {{ city }}</h3>
+
+        {% for route in city_routes %}
+        <div class="departure">
+            <strong>{{ route.route_id }} → {{ route.Destination }}</strong>
+            <div class="muted">{{ route['Departure time'] }}</div>
+            <div class="muted">Fare: Rs. {{ "{:,}".format(route.Fare) }}</div>
+        </div>
+        {% else %}
+        <p class="muted">No scheduled departures.</p>
+        {% endfor %}
+    </div>
+{% endfor %}
+</div>
+</section>
+
+
+{% elif view == 'report' %}
+
+<div class="section-title">
+    <h2>Booking Report</h2>
+    <p>Summary of current booking activity.</p>
+</div>
+
+<section class="stats">
+    <div class="stat-card">
+        <p>Total Bookings</p>
+        <h3>{{ report.total_bookings }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <p>Confirmed Bookings</p>
+        <h3>{{ report.confirmed_bookings }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <p>Cancelled Bookings</p>
+        <h3>{{ report.cancelled_bookings }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <p>Reserved Seats</p>
+        <h3>{{ report.reserved_seats }}</h3>
+    </div>
+</section>
+
+<section class="panel">
+    <h3>Revenue Summary</h3>
+    <p style="margin-top:15px">
+        Confirmed revenue:
+        <strong>Rs. {{ "{:,}".format(report.confirmed_revenue) }}</strong>
+    </p>
+
+    <p style="margin-top:12px">
+        Fully booked routes:
+        <strong>{{ report.fully_booked_routes }}</strong>
+    </p>
+</section>
+
+{% endif %}
+
+<footer>
+    SmartBus Ticket Booking System | Flask + HTML + CSS
+</footer>
+
+</main>
+</body>
+</html>
